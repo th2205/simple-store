@@ -1,0 +1,8 @@
+{
+  "name": "simple-store",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/th2205/simple-store",
+  "author": "taehyeon <th05662205@gmail.com>",
+  "license": "MIT"
+}

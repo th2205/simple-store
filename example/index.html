@@ -1,0 +1,32 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="todo-list"></div>
+    <input type="text">
+    <script src="../src/index.js"></script>
+    <script>
+        const $todoList = document.querySelector('#todo-list');
+        const $input = document.querySelector('input');
+        const store = new Store({
+            list:[]
+        });
+
+        store.on('list', () => {
+
+            store.getState.list.forEach((item)=> {
+                const div = document.createElement('div');
+                const span = document.createElement('span');
+    
+                span.textContent = item
+
+            })
+        }) 
+
+    </script>
+</body>
+</html>
