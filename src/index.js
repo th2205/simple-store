@@ -32,3 +32,11 @@ class Store {
     }
   }
 }
+
+
+  if (!this.events.hasOwnProperty(state)) {
+    this.events[state] = [];
+  }
+
+  this.events[state].push(fn);
+
