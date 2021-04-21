@@ -4,7 +4,8 @@ class Store {
 
   constructor(state) {
     this.state = state;
-    this.isExsistTimeout = false;
+    this.timeoutId;
+    this.defferdStates = new Set();
   }
 
   getState() {
@@ -20,10 +21,7 @@ class Store {
   }
 
   set(data) {
-    const events = this.events;
     const keys = Object.keys(data);
-
-    let timer;
 
     for (const key of keys) {
       if (
@@ -32,29 +30,25 @@ class Store {
         data[key] !== this.state[key]
       ) {
         this.state[key] = data[key];
-        // events[key].forEach((fn) => {
-        //   fn();
-        // });
+        this.defferdStates.add(key);
 
-        if (!this.isExsistTimeout) {
-          this.isExsistTimeout = true;
-          timer = setTimeout(() => {
-            events[key].forEach((fn) => {
-              fn();
-            });
-            this.isExsistTimeout = false;
-          }, 10);
+        if (!this.timeoutId) {
+          this._defferd();
         } else {
-          clearTimeout(timer);
-          timer = setTimeout(() => {
-            events[key].forEach((fn) => {
-              fn();
-            });
-            this.isExsistTimeout = false;
-          }, 10);
+          clearTimeout(this.timeoutId);
+
+          this._defferd();
         }
       }
     }
+  }
+
+  _defferd() {
+    this.timeoutId = setTimeout(() => {
+      this.defferdStates.forEach((state) => {
+        this.events[state].forEach((fn) => fn());
+      });
+    }, 10);
   }
 }
 
@@ -79,23 +73,30 @@ async function work() {
     isLoading: true
   });
 
-  await new Promise((resolve, reject) => {
+  await new Promise((resolve) => {
     setTimeout(() => {
+      // debugger;
+      store.set({
+        list: [111]
+      });
       resolve();
     }, 3000);
   });
 
   store.set({
-    list: [12],
     isLoading: false
   });
 }
-// store.set({
-//   list: [1]
-// });
+store.set({
+  list: [1]
+});
 
-// store.set({
-//   list: [2]
-// });
+store.set({
+  list: [2]
+});
+
+store.set({
+  list: [3]
+});
 
 work();
