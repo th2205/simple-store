@@ -48,6 +48,7 @@ class Store {
       this.defferdStates.forEach((state) => {
         this.events[state].forEach((fn) => fn());
       });
+      this.defferdStates.clear();
     }, 10);
   }
 }
