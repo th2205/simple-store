@@ -1,23 +1,21 @@
 class Store {
-  events = {};
-  state = {};
-
   constructor(state) {
-    this.state = state;
-    this.timeoutId;
-    this.defferdStates = new Set();
+    this._state = state;
+    this._events = {};
+    this._timeoutId;
+    this._defferdStates = new Set();
   }
 
   getState() {
-    return this.state;
+    return this._state;
   }
 
   on(state, fn) {
-    if (!this.events.hasOwnProperty(state)) {
-      this.events[state] = [];
+    if (!this._events.hasOwnProperty(state)) {
+      this._events[state] = [];
     }
 
-    this.events[state].push(fn);
+    this._events[state].push(fn);
   }
 
   set(data) {
@@ -26,16 +24,16 @@ class Store {
     for (const key of keys) {
       if (
         data[key] !== undefined &&
-        this.state[key] !== undefined &&
-        data[key] !== this.state[key]
+        this._state[key] !== undefined &&
+        data[key] !== this._state[key]
       ) {
-        this.state[key] = data[key];
-        this.defferdStates.add(key);
+        this._state[key] = data[key];
+        this._defferdStates.add(key);
 
-        if (!this.timeoutId) {
+        if (!this._timeoutId) {
           this._defferd();
         } else {
-          clearTimeout(this.timeoutId);
+          clearTimeout(this._timeoutId);
 
           this._defferd();
         }
@@ -44,60 +42,11 @@ class Store {
   }
 
   _defferd() {
-    this.timeoutId = setTimeout(() => {
-      this.defferdStates.forEach((state) => {
-        this.events[state].forEach((fn) => fn());
+    this._timeoutId = setTimeout(() => {
+      this._defferdStates.forEach((state) => {
+        this._events[state].forEach((fn) => fn());
       });
-      this.defferdStates.clear();
+      this._defferdStates.clear();
     }, 10);
   }
 }
-
-const store = new Store({
-  list: [],
-  isLoading: false
-});
-
-store.on('list', () => {
-  console.log(store.getState().list);
-});
-
-store.on('isLoading', () => {
-  const isLoading = store.getState().isLoading;
-
-  if (isLoading) return console.log('loading');
-  console.log('is not loading');
-});
-
-async function work() {
-  store.set({
-    isLoading: true
-  });
-
-  await new Promise((resolve) => {
-    setTimeout(() => {
-      // debugger;
-      store.set({
-        list: [111]
-      });
-      resolve();
-    }, 3000);
-  });
-
-  store.set({
-    isLoading: false
-  });
-}
-store.set({
-  list: [1]
-});
-
-store.set({
-  list: [2]
-});
-
-store.set({
-  list: [3]
-});
-
-work();
