@@ -9,14 +9,16 @@
     <div id="todo-list"></div>
     <input type="text">
     <button>추가</button>
+    <p id="loading" style="display: none;">loading....</p>
     <!-- <script src="../dist/index.js"></script> -->
-    <script src="../src//index.js"></script>
-    <!-- <script>
+    <script src="../src/index.js"></script>
+    <script>
         const $todoList = document.querySelector('#todo-list');
         const $input = document.querySelector('input');
         const $button = document.querySelector('button');
         const store = new Store({
-            list:[]
+            list:[],
+            isLoading: false
         });
 
         store.on('list', () => {
@@ -33,17 +35,41 @@
             })
         });
 
-        $button.addEventListener('click', () => {
+        store.on('isLoading', () => {
+            const isLoading = store.getState().isLoading
+            const $loading = document.querySelector('#loading')
+
+            if(isLoading){
+                $loading.style.display = 'block';
+            } else {
+                $loading.style.display = 'none';
+            }
+        });
+
+        $button.addEventListener('click',async () => {
             const value = $input.value
             const data = {
                 id: store.getState().list.length + 1,
                 todo: value
             }
+            
+            store.set({
+                isLoading: true
+            })
+            
+            await new Promise((resolve)=> (
+                setTimeout(() => {
+                    store.set({
+                        isLoading: false
+                    })
+                    resolve();
+                },3000)
+            ));
 
             store.set({
                 list: [...store.getState().list, data]
             })
         })
-    </script> -->
+    </script>
 </body>
 </html>
