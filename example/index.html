@@ -10,8 +10,8 @@
     <input type="text">
     <button>추가</button>
     <p id="loading" style="display: none;">loading....</p>
-    <!-- <script src="../dist/index.js"></script> -->
-    <script src="../src/index.js"></script>
+    <script src="../dist/simple-store.js"></script>
+    <!-- <script src="../src/index.js"></script> -->
     <script>
         const $todoList = document.querySelector('#todo-list');
         const $input = document.querySelector('input');
@@ -64,7 +64,7 @@
                     })
                     resolve();
                 },3000)
-            ));
+            )); // or ajax request...
 
             store.set({
                 list: [...store.getState().list, data]
