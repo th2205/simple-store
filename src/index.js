@@ -2,7 +2,7 @@ class Store {
   constructor(state) {
     this._state = state;
     this._events = {};
-    this._timeoutId;
+    this._isSending = false;
     this._defferdStates = new Set();
   }
 
@@ -22,19 +22,11 @@ class Store {
     const keys = Object.keys(data);
 
     for (const key of keys) {
-      if (
-        data[key] !== undefined &&
-        this._state[key] !== undefined &&
-        data[key] !== this._state[key]
-      ) {
+      if (data[key] !== this._state[key]) {
         this._state[key] = data[key];
         this._defferdStates.add(key);
 
-        if (!this._timeoutId) {
-          this._defferd();
-        } else {
-          clearTimeout(this._timeoutId);
-
+        if (!this._isSending) {
           this._defferd();
         }
       }
@@ -42,11 +34,13 @@ class Store {
   }
 
   _defferd() {
-    this._timeoutId = setTimeout(() => {
+    this._isSending = true;
+    setTimeout(() => {
       this._defferdStates.forEach((state) => {
         this._events[state].forEach((fn) => fn());
       });
+      this._isSending = false;
       this._defferdStates.clear();
-    }, 10);
+    });
   }
 }
