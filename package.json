@@ -1,6 +1,6 @@
 {
-  "name": "simple-store",
-  "version": "1.0.0",
+  "name": "rsup-simple-data-store",
+  "version": "1.0.2",
   "main": "index.js",
   "repository": "https://github.com/th2205/simple-store",
   "author": "taehyeon <th05662205@gmail.com>",
@@ -15,5 +15,6 @@
     "babel-loader": "^8.2.2",
     "webpack": "^5.36.2",
     "webpack-cli": "^4.6.0"
-  }
+  },
+  "keywords": ["store"]
 }
