@@ -37,7 +37,12 @@ export default class Store {
     this._isSending = true;
     setTimeout(() => {
       this._defferdStates.forEach((state) => {
-        this._events[state].forEach((fn) => fn());
+        const events = this._events[state];
+
+        if (events) {
+          events.forEach((fn) => fn());
+        }
+        // this._events[state].forEach((fn) => fn());
       });
       this._isSending = false;
       this._defferdStates.clear();
